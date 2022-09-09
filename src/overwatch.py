@@ -106,11 +106,11 @@ class MakeGenerator():
                     ignored_list.append(i)
             self._cached_stamp = stamp
             make(ignored_list, dest)
-            subprocess.run(['node', '.overwatch/src/pretty_output_changedetected.js'])
+            subprocess.run(['node', '.overwatch/overwatch/src/pretty_output_changedetected.js'])
             os.system('clear')
             subprocess.run(["make"])
             os.system('clear')
-            subprocess.run(['node', '.overwatch/src/pretty_output_serverstart.js'])
+            subprocess.run(['node', '.overwatch/overwatch/src/pretty_output_serverstart.js'])
 
 def main():
     if len(sys.argv) < 3 or len(sys.argv) > 3:
@@ -119,7 +119,7 @@ def main():
     path = sys.argv[1]
     dest = sys.argv[2]
     watcher = MakeGenerator(path)
-    subprocess.run(['node', '.overwatch/src/pretty_output_serverstart.js'])
+    subprocess.run(['node', '.overwatch/overwatch/src/pretty_output_serverstart.js'])
     os.system('clear')
     while True:
         try:
