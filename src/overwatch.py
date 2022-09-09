@@ -88,29 +88,27 @@ class MakeGenerator():
         watched_files = [os.path.join(self.pwd, basename)for basename in files]
         stamp = os.stat(self.pwd).st_mtime
         if stamp != self._cached_stamp:
-
-            sorted_files = self._get_ctime_sorted_files(watched_files)
+            cleaned_list = [x.split('/')[1] for x in watched_files]
+            sorted_files = self._get_ctime_sorted_files(cleaned_list)
             ignored_list = []
             for i in sorted_files:
-                if i == "./Makefile":
+                if i == "Makefile":
                     continue
-                if i == "./venv":
-                    continue
-                if i == "./overwatch.py":
-                    continue
-                if i == "./requirements.txt":
+                if os.path.isdir(i):
                     continue
                 if i.startswith('./.'):
                     continue
                 else:
                     ignored_list.append(i)
+            ignored_list = ["./src/"+i for i in ignored_list]
             self._cached_stamp = stamp
             make(ignored_list, dest)
-            subprocess.run(['node', '.overwatch/overwatch/src/pretty_output_changedetected.js'])
+            subprocess.run(['node', 'overwatch/src/pretty_output_changedetected.js'])
             os.system('clear')
+            os.chdir("../")
             subprocess.run(["make"])
-            os.system('clear')
-            subprocess.run(['node', '.overwatch/overwatch/src/pretty_output_serverstart.js'])
+            os.chdir("src/")
+            subprocess.run(['node', 'overwatch/src/pretty_output_serverstart.js'])
 
 def main():
     if len(sys.argv) < 3 or len(sys.argv) > 3:
@@ -119,7 +117,7 @@ def main():
     path = sys.argv[1]
     dest = sys.argv[2]
     watcher = MakeGenerator(path)
-    subprocess.run(['node', '.overwatch/overwatch/src/pretty_output_serverstart.js'])
+    subprocess.run(['node', 'overwatch/src/pretty_output_serverstart.js'])
     os.system('clear')
     while True:
         try:
